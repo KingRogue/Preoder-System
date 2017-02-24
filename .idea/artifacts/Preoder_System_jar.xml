@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Preoder-System:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Preoder_System_jar</output-path>
+    <root id="archive" name="Preoder-System.jar">
+      <element id="module-output" name="Preoder-System" />
+    </root>
+  </artifact>
+</component>

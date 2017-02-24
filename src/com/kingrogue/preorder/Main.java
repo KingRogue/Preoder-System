@@ -2,16 +2,14 @@ package com.kingrogue.preorder;/**
  * Created by Tim G on 16-Feb-17.
  */
 
-import com.kingrogue.preorder.model.Activity;
-import com.kingrogue.preorder.model.Customer;
-import com.kingrogue.preorder.model.Order;
-import com.kingrogue.preorder.model.Product;
+import com.kingrogue.preorder.model.*;
 import javafx.application.Application;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -36,9 +34,9 @@ public class Main extends Application {
         productData.add(new Product(1,"A2 Stage 3"));
         productData.add(new Product(2,"A2 Stage 2"));
 
-        orderData.add(new Order(1,1,1,1,1, new SimpleObjectProperty<LocalDate>(LocalDate.now())));
-        orderData.add(new Order(2,2,2,2,5, new SimpleObjectProperty<LocalDate>(LocalDate.now())));
-        orderData.add(new Order(3,2,1,1,10, new SimpleObjectProperty<LocalDate>(LocalDate.now())));
+        orderData.add(new Order(1,1,1,1,1, LocalDate.now()));
+        orderData.add(new Order(2,2,2,2,5, LocalDate.now()));
+        orderData.add(new Order(3,2,1,1,10, LocalDate.now()));
     }
 
     public ObservableList<Product> getProductData(){
@@ -61,6 +59,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Preorders");
+        this.primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("paper.png")));
 
         initRootLayout();
     }
@@ -75,6 +74,7 @@ public class Main extends Application {
             Scene scene  = new Scene(rootLayout);
             primaryStage.setScene(scene);
             primaryStage.show();
+            DataController dataController = new DataController();
         } catch (IOException e) {
             e.printStackTrace();
         }

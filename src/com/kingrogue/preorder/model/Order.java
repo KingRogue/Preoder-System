@@ -19,16 +19,14 @@ public class Order {
     private final SimpleIntegerProperty quantity;
     private final ObjectProperty<LocalDate> date;
 
-    public Order(int id, int receiptNo, int customerID, int productID, int quantity, SimpleObjectProperty<LocalDate> date) {
+    public Order(int id, int receiptNo, int customerID, int productID, int quantity, LocalDate date) {
 
         this.id = new SimpleIntegerProperty(id);
         this.receiptNo = new SimpleIntegerProperty(receiptNo);
         this.customerID = new SimpleIntegerProperty(customerID);
         this.productID = new SimpleIntegerProperty(productID);
         this.quantity = new SimpleIntegerProperty(quantity);
-        this.date = date;
-
-
+        this.date = new SimpleObjectProperty<>(date);
     }
 
     public int getID(){
