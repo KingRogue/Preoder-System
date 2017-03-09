@@ -10,14 +10,20 @@ import javafx.beans.property.StringProperty;
  */
 public class Customer {
 
+    //set on initialization
     private final SimpleIntegerProperty id;
     private final SimpleStringProperty name;
     private final SimpleIntegerProperty phone;
+
+    //populated after init
+    private SimpleIntegerProperty noOrders;
 
     public Customer(int id, String name, int phone){
         this.id = new SimpleIntegerProperty(id);
         this.name = new SimpleStringProperty(name);
         this.phone = new SimpleIntegerProperty(phone);
+
+        this.noOrders = new SimpleIntegerProperty(0);
     }
 
     public int getID(){
@@ -54,5 +60,17 @@ public class Customer {
 
     public IntegerProperty phoneProperty(){
         return phone;
+    }
+
+    public int getNoOrders() {
+        return noOrders.get();
+    }
+
+    public SimpleIntegerProperty noOrdersProperty() {
+        return noOrders;
+    }
+
+    public void setNoOrders(int noOrders) {
+        this.noOrders.set(noOrders);
     }
 }

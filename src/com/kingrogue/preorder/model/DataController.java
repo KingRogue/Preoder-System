@@ -1,23 +1,29 @@
 package com.kingrogue.preorder.model;
 
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import javax.xml.crypto.Data;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+
 
 /**
  * Created by Tim G on 18-Feb-17.
  */
 public class DataController {
 
-    private ArrayList<Product> products;
-    private ArrayList<Order> orders;
-    private ArrayList<Customer> customers;
-    private ArrayList<Activity> activities;
+    private ObservableList<Product> products;
+    private ObservableList<Order> orders;
+    private ObservableList<Customer> customers;
+    private ObservableList<Activity> activities;
     private String location;
     private int productIdCount = 0;
     private int orderIdCount = 0;
@@ -30,17 +36,23 @@ public class DataController {
         System.out.println(location);
         File dir = new File(location);
         boolean firstRun = dir.mkdirs(); //will be true if first time running on computer
-        this.products = loadProducts();
-        this.orders = loadOrders();
-        this.customers = loadCustomers();
-        this.activities = loadActivities();
+
+        this.products = FXCollections.observableArrayList();
+        this.orders = FXCollections.observableArrayList();
+        this.customers = FXCollections.observableArrayList();
+        this.activities = FXCollections.observableArrayList();
+
+        this.loadProducts();
+        this.loadCustomers();
+        this.loadOrders();
+        this.loadActivities();
 
         System.out.println("Loaded all files");
     }
 
-    private ArrayList<Product> loadProducts(){
+    private void loadProducts(){
         System.out.println("Loading Products");
-        ArrayList<Product> products = new ArrayList<Product>();
+        ObservableList<Product> products = FXCollections.observableArrayList();
         BufferedReader reader = null;
         ArrayList<String> contents = new ArrayList<String>();
 
@@ -54,6 +66,7 @@ public class DataController {
             }
             reader.close();
         }catch (FileNotFoundException e){ //no file exists, so need to create it
+            new File(this.location).mkdirs();
             File file = new File(this.location + "/products.txt");
             try{
                 file.createNewFile();
@@ -65,22 +78,21 @@ public class DataController {
         }
         System.out.println(contents);
         if (contents.isEmpty()){
-            return new ArrayList<Product>(); //if file was empty
+            return; //if file was empty
         }else{
             String metadata = contents.get(0); //turn each line of the file into a product object
             contents.remove(0);
             for (int i = 0 ; i<contents.size() ; i++) {
                 String[] lineList = contents.get(i).split(",");
-                products.add(new Product(new Integer(lineList[0]),lineList[1]));
-                this.productIdCount += 1;
+                addProduct(new Integer(lineList[0]),lineList[1]);
             }
         }
-        return products;
+        return;
     }
 
-    private ArrayList<Order> loadOrders(){
+    private void loadOrders(){
         System.out.println("Loading Orders");
-        ArrayList<Order> orders = new ArrayList<Order>();
+        ObservableList<Order> orders = FXCollections.observableArrayList();
         BufferedReader reader = null;
         ArrayList<String> contents = new ArrayList<String>();
 
@@ -94,6 +106,7 @@ public class DataController {
             }
             reader.close();
         }catch (FileNotFoundException e){ //no file exists, so need to create it
+            new File(this.location).mkdirs();
             File file = new File(this.location + "/orders.txt");
             try{
                 file.createNewFile();
@@ -105,23 +118,21 @@ public class DataController {
         }
         System.out.println(contents);
         if (contents.isEmpty()){
-            return new ArrayList<Order>(); //if file was empty
+            return; //if file was empty
         }else{
             String metadata = contents.get(0); //turn each line of the file into a product object
             contents.remove(0);
             for (int i = 0 ; i<contents.size() ; i++) {
                 String[] lineList = contents.get(i).split(",");
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                orders.add(new Order( new Integer(lineList[0]), new Integer(lineList[1]), new Integer(lineList[2]), new Integer(lineList[3]), new Integer(lineList[4]), LocalDate.parse(lineList[5],dtf)));
-                this.orderIdCount += 1;
+                addOrder(new Integer(lineList[0]), new Integer(lineList[1]), new Integer(lineList[2]), new Integer(lineList[3]), new Integer(lineList[4]), LocalDate.parse(lineList[5],dtf));
             }
         }
-        return orders;
+        return;
     }
 
-    private ArrayList<Customer> loadCustomers(){
+    private void loadCustomers(){
         System.out.println("Loading Customers");
-        ArrayList<Customer> customers = new ArrayList<Customer>();
         BufferedReader reader = null;
         ArrayList<String> contents = new ArrayList<String>();
 
@@ -135,6 +146,7 @@ public class DataController {
             }
             reader.close();
         }catch (FileNotFoundException e){ //no file exists, so need to create it
+            new File(this.location).mkdirs();
             File file = new File(this.location + "/customers.txt");
             try{
                 file.createNewFile();
@@ -146,22 +158,20 @@ public class DataController {
         }
         System.out.println(contents);
         if (contents.isEmpty()){
-            return new ArrayList<Customer>(); //if file was empty
+            return; //if file was empty
         }else{
             String metadata = contents.get(0); //turn each line of the file into a product object
             contents.remove(0);
             for (int i = 0 ; i<contents.size() ; i++) {
                 String[] lineList = contents.get(i).split(",");
-                customers.add(new Customer(new Integer(lineList[0]), lineList[1], new Integer(lineList[2])));
-                this.customerIdCount += 1;
+                addCustomer(new Integer(lineList[0]), lineList[1], new Integer(lineList[2]));
             }
         }
-        return customers;
+        return;
     }
 
-    private ArrayList<Activity> loadActivities(){
+    private void loadActivities(){
         System.out.println("Loading Activities");
-        ArrayList<Activity> activities = new ArrayList<Activity>();
         BufferedReader reader = null;
         ArrayList<String> contents = new ArrayList<String>();
 
@@ -175,6 +185,7 @@ public class DataController {
             }
             reader.close();
         }catch (FileNotFoundException e){ //no file exists, so need to create it
+            new File(this.location).mkdirs();
             File file = new File(this.location + "/activities.txt");
             try{
                 file.createNewFile();
@@ -186,37 +197,136 @@ public class DataController {
         }
         System.out.println(contents);
         if (contents.isEmpty()){
-            return new ArrayList<Activity>(); //if file was empty
+            return; //if file was empty
         }else{
             String metadata = contents.get(0); //turn each line of the file into a product object
             contents.remove(0);
             for (int i = 0 ; i<contents.size() ; i++) {
                 String[] lineList = contents.get(i).split(",");
-                activities.add(new Activity(new Integer(lineList[0]), new Integer(lineList[1]), new Boolean(lineList[2]), new Boolean(lineList[3]), new Integer(lineList[4])));
-                this.activityIdCount += 1;
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                addActivity(new Integer(lineList[0]), new Integer(lineList[1]), new Boolean(lineList[2]), new Boolean(lineList[3]), new Integer(lineList[4]), LocalDate.parse(lineList[5],dtf));
             }
         }
+        return;
+    }
+
+    public void addProduct(int id, String name){
+        if (id == -1){
+            id = this.productIdCount;
+        }
+        this.products.add(new Product(id,name));
+        this.productIdCount += 1;
+    }
+
+    public void addOrder(int id, int receiptNo, int customerID, int productID, int quantity, LocalDate date){ //adding a new order to the system
+        boolean newOrderBool = false;
+        if (id == -1){
+            newOrderBool = true;
+            id = this.orderIdCount;
+        }
+        Order newOrder = new Order(id, receiptNo, customerID, productID, quantity, date); //new order
+
+        newOrder.setQuantitySupplied(0);
+        newOrder.setQuantityOwed(quantity);
+
+        Product product = this.getProduct(productID); //updating the relevant product details
+        product.setNumberOfOrders( product.getNumberOfOrders() + 1 );
+        product.setQuantityOnOrder( product.getQuantityOnOrder() + quantity );
+        newOrder.setProductName(product.getName());//getting product name
+
+        Customer customer = this.getCustomer(customerID); //updating the relevant customer details
+        customer.setNoOrders( customer.getNoOrders() + 1 );
+        newOrder.setCustomerName(customer.getName());
+
+        this.orders.add(newOrder);
+        this.orderIdCount += 1;
+        if (newOrderBool){
+            this.addActivity(id, -1, true, false, 0, date);
+        }
+
+    }
+
+    public void addCustomer(int id, String name, int phone){ //creating a new customer
+        if (id == -1){
+            id = this.customerIdCount;
+        }
+        Customer newCustomer = new Customer(id, name, phone);
+        customers.add(newCustomer);
+        this.customerIdCount += 1;
+    }
+
+    public void addActivity(int orderID, int activityNo, boolean createdOrder, boolean cancelledOrder, int quantitySupplied, LocalDate date){
+        if (activityNo == -1){
+            activityNo = this.getNextActivityNumber(orderID);
+        }
+
+        Order order = getOrder(orderID);
+        order.setQuantitySupplied(order.getQuantitySupplied() + quantitySupplied);
+        order.setQuantityOwed(order.getQuantityOwed() - quantitySupplied);
+
+        Activity activity = new Activity(orderID, activityNo, createdOrder, cancelledOrder, quantitySupplied, date);
+        activityIdCount += 1;
+    }
+
+    public Order getOrder(int id){
+        for(Iterator<Order> i = orders.iterator(); i.hasNext();){
+            Order order = i.next();
+            if(order.getID() == id){
+                return order;
+            }
+        }
+        return null;
+    }
+    public Product getProduct(int id){
+        for(Iterator<Product> i = products.iterator(); i.hasNext();){
+            Product product = i.next();
+            if( product.getId() == id){
+                return product;
+            }
+        }
+        return null;
+    }
+    public Customer getCustomer(int id){
+        for(Iterator<Customer> i = customers.iterator(); i.hasNext();){
+            Customer customer = i.next();
+            if(customer.getID() == id){
+                return customer;
+            }
+        }
+        return null;
+    }
+    public Activity getActivity(int orderID, int activityNo){
+        for(Iterator<Activity> i = activities.iterator(); i.hasNext();){
+            Activity activity = i.next();
+            if(activity.getOrderId() == orderID && activity.getActivityNo() == activityNo){
+                return activity;
+            }
+        }
+        return null;
+    }
+    public int getNextActivityNumber(int orderID){
+        int max = 0;
+        for(Iterator<Activity> i = activities.iterator(); i.hasNext() ;){
+            Activity activity = i.next();
+            if (activity.getOrderId() == orderID){
+                if (activity.getActivityNo() > max){
+                    max = activity.getActivityNo();
+                }
+            }
+        }
+        return (max + 1); // max + 1 because we want the next activity number
+    }
+
+    public ObservableList<Order> getOrders() {
+        return orders;
+    }
+    public ObservableList<Product> getProducts(){
+        return products;
+    }
+    public ObservableList<Customer> getCustomers(){
+        return customers;
+    }
+    public ObservableList<Activity> getActivities(){
         return activities;
-    }
-
-    private void updateObservables(){
-
-    }
-
-    public void addProduct(){
-
-    }
-    public void addOrder(){
-
-    }
-    public void addCustomer(){
-
-    }
-    public void addActivity(){
-
-    }
-
-    public static void main(String[] args) {
-
     }
 }

@@ -12,12 +12,20 @@ import java.util.Date;
  */
 public class Order {
 
+    //set on initialization
     private final SimpleIntegerProperty id;
     private final SimpleIntegerProperty receiptNo;
     private final SimpleIntegerProperty customerID;
     private final SimpleIntegerProperty productID;
     private final SimpleIntegerProperty quantity;
     private final ObjectProperty<LocalDate> date;
+
+    //populated after init
+    private SimpleStringProperty customerName;
+    private SimpleStringProperty productName;
+    private SimpleIntegerProperty quantityOwed;
+    private SimpleIntegerProperty quantitySupplied;
+    private int activityCount;
 
     public Order(int id, int receiptNo, int customerID, int productID, int quantity, LocalDate date) {
 
@@ -27,6 +35,13 @@ public class Order {
         this.productID = new SimpleIntegerProperty(productID);
         this.quantity = new SimpleIntegerProperty(quantity);
         this.date = new SimpleObjectProperty<>(date);
+
+        this.customerName = new SimpleStringProperty();
+        this.productName = new SimpleStringProperty();
+        this.quantityOwed = new SimpleIntegerProperty(quantity);
+        this.quantitySupplied = new SimpleIntegerProperty(0);
+
+        this.activityCount = new Integer(0);
     }
 
     public int getID(){
@@ -101,4 +116,59 @@ public class Order {
         return date;
     }
 
+    public String getCustomerName() {
+        return customerName.get();
+    }
+
+    public SimpleStringProperty customerNameProperty() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName.set(customerName);
+    }
+
+    public String getProductName() {
+        return productName.get();
+    }
+
+    public SimpleStringProperty productNameProperty() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName.set(productName);
+    }
+
+    public int getQuantityOwed() {
+        return quantityOwed.get();
+    }
+
+    public SimpleIntegerProperty quantityOwedProperty() {
+        return quantityOwed;
+    }
+
+    public void setQuantityOwed(int quantityOwed) {
+        this.quantityOwed.set(quantityOwed);
+    }
+
+    public int getQuantitySupplied() {
+        return quantitySupplied.get();
+    }
+
+    public SimpleIntegerProperty quantitySuppliedProperty() {
+        return quantitySupplied;
+    }
+
+    public void setQuantitySupplied(int quantitySupplied) {
+        this.quantitySupplied.set(quantitySupplied);
+    }
+
+    public int getActivityCount() {
+        return activityCount;
+    }
+
+    public void setActivityCount(int activityCount) {
+        this.activityCount = activityCount;
+    }
 }

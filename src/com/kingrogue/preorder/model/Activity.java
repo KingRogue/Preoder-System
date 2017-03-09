@@ -1,8 +1,8 @@
 package com.kingrogue.preorder.model;
 
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
+
+import java.time.LocalDate;
 
 /**
  * Created by Tim G on 16-Feb-17.
@@ -10,20 +10,23 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class Activity {
 
+    //set on initialization
     private final SimpleIntegerProperty orderId;
     private final SimpleIntegerProperty activityNo;
     private final SimpleBooleanProperty createdOrder;
     private final SimpleBooleanProperty cancelledOrder;
     private final SimpleIntegerProperty quantitySupplied;
     private final SimpleStringProperty description;
+    private final ObjectProperty<LocalDate> date;
 
-    public Activity(int orderId, int activityNo, boolean createdOrder, boolean cancelledOrder, int quantitySupplied){
+    public Activity(int orderId, int activityNo, boolean createdOrder, boolean cancelledOrder, int quantitySupplied, LocalDate date){
         this.orderId = new SimpleIntegerProperty(orderId);
         this.activityNo = new SimpleIntegerProperty(activityNo);
         this.createdOrder = new SimpleBooleanProperty(createdOrder);
         this.cancelledOrder = new SimpleBooleanProperty(cancelledOrder);
         this.quantitySupplied = new SimpleIntegerProperty(quantitySupplied);
         this.description = new SimpleStringProperty("");
+        this.date = new SimpleObjectProperty<>(date);
         updateDescription();
     }
 
