@@ -266,6 +266,7 @@ public class DataController {
 
         Activity activity = new Activity(orderID, activityNo, createdOrder, cancelledOrder, quantitySupplied, date);
         activityIdCount += 1;
+        this.activities.add(activity);
     }
 
     public Order getOrder(int id){

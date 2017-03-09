@@ -4,14 +4,19 @@ package com.kingrogue.preorder.view;
  * Created by Tim G on 09-Mar-17.
  */
 
+import com.kingrogue.preorder.util.DateUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import com.kingrogue.preorder.MainApp;
 import com.kingrogue.preorder.model.Order;
+import com.kingrogue.preorder.util.DateUtil;
 
 import java.time.LocalDate;
+import java.util.Date;
+
 
 public class OrderOverviewController {
     @FXML
@@ -19,7 +24,7 @@ public class OrderOverviewController {
     @FXML
     private TableColumn<Order, String> customerTableColumn;
     @FXML
-    private TableColumn<Order, String> dateTableColumn;
+    private TableColumn<Order, LocalDate> dateTableColumn;
     @FXML
     private TableColumn<Order, String> productTableColumn;
     @FXML
@@ -48,9 +53,27 @@ public class OrderOverviewController {
     @FXML
     private void initialize(){
         customerTableColumn.setCellValueFactory(cellData -> cellData.getValue().customerNameProperty());
-        dateTableColumn.setCellValueFactory(cellData -> cellData.getValue().dateProperty().asString());
+        dateTableColumn.setCellValueFactory(cellData -> cellData.getValue().dateProperty());
         productTableColumn.setCellValueFactory(cellData -> cellData.getValue().productNameProperty());
         quantityTableColumn.setCellValueFactory(cellData -> cellData.getValue().quantityOwedProperty().asObject());
+
+
+
+        dateTableColumn.setCellFactory(column -> {
+            return new TableCell<Order, LocalDate>() {
+                @Override
+                protected void updateItem(LocalDate item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty){
+                        setText(null);
+                        setStyle("");
+                    }else{
+                        setText(DateUtil.DATE_FORMATTER.format(item));
+                    }
+                }
+            };
+        });
 
         showOrderDetails(null);
 
@@ -67,7 +90,7 @@ public class OrderOverviewController {
     public void showOrderDetails(Order order){
         if (order != null) {
             customerNameLabel.setText(order.getCustomerName());
-            orderDateLabel.setText(order.getDate().toString());
+            orderDateLabel.setText(DateUtil.DATE_FORMATTER.format(order.getDate()));
             receiptNoLabel.setText(Integer.toString(order.getReceiptNo()));
             productNameLabel.setText(order.getProductName());
             quantityOwedLabel.setText(Integer.toString(order.getQuantityOwed()));

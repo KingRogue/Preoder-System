@@ -104,6 +104,9 @@ public class MainApp extends Application {
         dataController.addOrder(-1, 579, 0, 0, 42, newLocalDate("01-01-2016"));
         dataController.addOrder(-1, 890, 2, 0, 59, newLocalDate("05-04-2016"));
         dataController.addOrder(-1, 2570, 2, 1, 2000, newLocalDate("12-01-2017"));
+        dataController.addOrder(-1, 2571, 3, 1, 200, newLocalDate("12-01-2017"));
+        dataController.addOrder(-1, 2572, 3, 1, 20, newLocalDate("12-01-2017"));
+
     }
 
     public LocalDate newLocalDate(String date){
