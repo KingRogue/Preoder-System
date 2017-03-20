@@ -26,6 +26,10 @@ public class Customer {
         this.noOrders = new SimpleIntegerProperty(0);
     }
 
+    public String toString(){
+        return this.getName();
+    }
+
     public int getID(){
         return id.get();
     }

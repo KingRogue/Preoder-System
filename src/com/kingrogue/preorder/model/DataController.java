@@ -5,6 +5,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import com.kingrogue.preorder.util.DateUtil;
+
 import javax.xml.crypto.Data;
 import java.io.*;
 import java.time.LocalDate;
@@ -12,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 
 
 
@@ -29,6 +32,9 @@ public class DataController {
     private int orderIdCount = 0;
     private int customerIdCount = 0;
     private int activityIdCount = 0;
+    private boolean loaded = false;
+
+    private final String VERSION_NO = "1.0.1";
 
     public DataController() {
         String location = System.getProperty("user.home");
@@ -47,7 +53,7 @@ public class DataController {
         this.loadOrders();
         this.loadActivities();
 
-        System.out.println("Loaded all files");
+        this.loaded = true;
     }
 
     private void loadProducts(){
@@ -210,12 +216,99 @@ public class DataController {
         return;
     }
 
+    public void saveAll(String filelocation){
+        //save orders
+        saveOrders(filelocation);
+        //save products
+        saveProducts(filelocation);
+        //save customers
+        saveCustomers(filelocation);
+        //save activities
+        saveActivities(filelocation);
+    }
+
+    private void saveOrders(String filelocation){
+        String content = VERSION_NO + "\n";
+        for(Iterator<Order> i = getOrders().iterator(); i.hasNext();){
+            Order order = i.next();
+            String orderContent =
+                    Integer.toString(order.getID()) + ","
+                    + Integer.toString(order.getReceiptNo()) + ","
+                    + Integer.toString(order.getCustomerID()) + ","
+                    + Integer.toString(order.getProductID()) + ","
+                    + Integer.toString(order.getQuantity()) + ","
+                    + DateUtil.format(order.getDate()) + "\n";
+            content = content + orderContent;
+        }
+        writeToFile("/orders.txt", filelocation, content);
+    }
+    private void saveProducts(String filelocation){
+        String content = VERSION_NO + "\n";
+        for(Iterator<Product> i = getProducts().iterator(); i.hasNext();){
+            Product product = i.next();
+            String productContent =
+                    Integer.toString(product.getId()) + ","
+                    + product.getName() + "\n";
+            content = content + productContent;
+        }
+        writeToFile("/products.txt", filelocation, content);
+    }
+    private void saveCustomers(String filelocation){
+        String content = VERSION_NO + "\n";
+        for(Iterator<Customer> i = getCustomers().iterator(); i.hasNext();){
+            Customer customer = i.next();
+            String customerContent =
+                    Integer.toString(customer.getID()) + ","
+                    + customer.getName() + ","
+                    + Integer.toString(customer.getPhone()) + "\n";
+            content = content + customerContent;
+        }
+        writeToFile("/customers.txt", filelocation, content);
+    }
+    private void saveActivities(String filelocation){
+        String content = VERSION_NO + "\n";
+        for(Iterator<Activity> i = getActivities().iterator(); i.hasNext();){
+            Activity activity = i.next();
+            String activityContent =
+                    Integer.toString(activity.getOrderId()) + ","
+                    + Integer.toString(activity.getActivityNo()) + ","
+                    + Boolean.toString(activity.isCreatedOrder()) + ","
+                    + Boolean.toString(activity.isCancelledOrder()) + ","
+                    + Integer.toString(activity.getQuantitySupplied()) +","
+                    + DateUtil.format(activity.getDate()) + "\n";
+            content = content + activityContent;
+        }
+        writeToFile("/activities.txt", filelocation, content);
+    }
+
+    public void writeToFile(String filename, String filelocation, String content){
+        if (filelocation == null)filelocation = this.location;
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+        try{
+            fw = new FileWriter(filelocation+filename);
+            bw = new BufferedWriter(fw);
+            bw.write(content);
+
+        }catch(IOException e){
+            e.printStackTrace();
+        }finally {
+            try {
+                if (bw != null) bw.close();
+                if (fw != null) fw.close();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void addProduct(int id, String name){
         if (id == -1){
             id = this.productIdCount;
         }
         this.products.add(new Product(id,name));
         this.productIdCount += 1;
+        if (this.loaded) this.saveAll(null);
     }
 
     public void addOrder(int id, int receiptNo, int customerID, int productID, int quantity, LocalDate date){ //adding a new order to the system
@@ -243,7 +336,7 @@ public class DataController {
         if (newOrderBool){
             this.addActivity(id, -1, true, false, 0, date);
         }
-
+        if (this.loaded) this.saveAll(null);
     }
 
     public void addCustomer(int id, String name, int phone){ //creating a new customer
@@ -253,6 +346,7 @@ public class DataController {
         Customer newCustomer = new Customer(id, name, phone);
         customers.add(newCustomer);
         this.customerIdCount += 1;
+        if (this.loaded) this.saveAll(null);
     }
 
     public void addActivity(int orderID, int activityNo, boolean createdOrder, boolean cancelledOrder, int quantitySupplied, LocalDate date){
@@ -267,6 +361,8 @@ public class DataController {
         Activity activity = new Activity(orderID, activityNo, createdOrder, cancelledOrder, quantitySupplied, date);
         activityIdCount += 1;
         this.activities.add(activity);
+
+        if (this.loaded) this.saveAll(null);
     }
 
     public Order getOrder(int id){
@@ -330,4 +426,18 @@ public class DataController {
     public ObservableList<Activity> getActivities(){
         return activities;
     }
+
+    public ObservableList<Order> getOrdersFiltered(){
+        ObservableList<Order> filteredList = FXCollections.observableArrayList();
+
+        for(Iterator<Order> i = orders.iterator(); i.hasNext();) {
+            Order order = i.next();
+            if (order.getQuantityOwed() > 0){
+                filteredList.add(order);
+            }
+        }
+        return filteredList;
+    }
+
+
 }

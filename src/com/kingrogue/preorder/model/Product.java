@@ -24,6 +24,10 @@ public class Product {
         this.numberOfOrders = new SimpleIntegerProperty(0);
     }
 
+    public String toString(){
+        return getName();
+    }
+
     public int getId(){
         return id.get();
     }

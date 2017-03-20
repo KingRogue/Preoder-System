@@ -4,12 +4,15 @@ package com.kingrogue.preorder.view;
  * Created by Tim G on 09-Mar-17.
  */
 
+import com.kingrogue.preorder.model.Activity;
+import com.kingrogue.preorder.model.DataController;
 import com.kingrogue.preorder.util.DateUtil;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableListValue;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import com.kingrogue.preorder.MainApp;
 import com.kingrogue.preorder.model.Order;
 import com.kingrogue.preorder.util.DateUtil;
@@ -31,6 +34,8 @@ public class OrderOverviewController {
     private TableColumn<Order, Integer> quantityTableColumn;
 
     @FXML
+    private Button updateButton;
+    @FXML
     private Label customerNameLabel;
     @FXML
     private Label orderDateLabel;
@@ -42,6 +47,14 @@ public class OrderOverviewController {
     private Label quantityOwedLabel;
     @FXML
     private Label quantitySuppliedLabel;
+    @FXML
+    private CheckBox hideCompleteCheckbox;
+    @FXML
+    private TableView<Activity> activityTable;
+    @FXML
+    private TableColumn<Activity, LocalDate> activityDateTableColumn;
+    @FXML
+    private TableColumn<Activity, String> activityDescriptionTableColumn;
 
 
     private MainApp mainApp;
@@ -57,7 +70,8 @@ public class OrderOverviewController {
         productTableColumn.setCellValueFactory(cellData -> cellData.getValue().productNameProperty());
         quantityTableColumn.setCellValueFactory(cellData -> cellData.getValue().quantityOwedProperty().asObject());
 
-
+        activityDateTableColumn.setCellValueFactory(cellData -> cellData.getValue().dateProperty());
+        activityDescriptionTableColumn.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
 
         dateTableColumn.setCellFactory(column -> {
             return new TableCell<Order, LocalDate>() {
@@ -75,16 +89,54 @@ public class OrderOverviewController {
             };
         });
 
-        showOrderDetails(null);
+        activityDateTableColumn.setCellFactory(column -> {
+            return new TableCell<Activity, LocalDate>() {
+                @Override
+                protected void updateItem(LocalDate item, boolean empty) {
+                    super.updateItem(item, empty);
 
-        orderTable.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldvalue, newvalue) -> showOrderDetails(newvalue));
+                    if (item == null || empty){
+                        setText(null);
+                        setStyle("");
+                    }else{
+                        setText(DateUtil.DATE_FORMATTER.format(item));
+                    }
+                }
+            };
+        });
+
+        showOrderDetails(null);
+        this.updateButton.disableProperty().set(true);
+
+        //orderTable.getSelectionModel().selectedItemProperty().addListener(
+        //        (observable, oldvalue, newvalue) -> showOrderDetails(newvalue));
+
+        orderTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Order>() {
+            @Override
+            public void changed(ObservableValue<? extends Order> observable, Order oldValue, Order newValue) {
+                if (newValue == null){
+                    updateButton.disableProperty().set(true);
+                }
+                else{
+                    updateButton.disableProperty().set(false);
+                    showOrderDetails(newValue);
+                }
+            }
+        });
+
+        hideCompleteCheckbox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                toggleFilterOrders(newValue);
+            }
+        });
     }
 
     public void setMainApp(MainApp mainApp){
         this.mainApp = mainApp;
 
         orderTable.setItems(mainApp.getOrderData());
+        activityTable.setItems(FXCollections.observableArrayList());
     }
 
     public void showOrderDetails(Order order){
@@ -95,6 +147,7 @@ public class OrderOverviewController {
             productNameLabel.setText(order.getProductName());
             quantityOwedLabel.setText(Integer.toString(order.getQuantityOwed()));
             quantitySuppliedLabel.setText(Integer.toString(order.getQuantitySupplied()));
+            activityTable.setItems(mainApp.getOrderActivities(order));
         }else{
             customerNameLabel.setText("");
             orderDateLabel.setText("");
@@ -102,9 +155,30 @@ public class OrderOverviewController {
             productNameLabel.setText("");
             quantityOwedLabel.setText("");
             quantitySuppliedLabel.setText("");
+            activityTable.setItems(FXCollections.observableArrayList());
         }
 
     }
+
+    private void toggleFilterOrders(boolean filter){
+        if (filter){
+            orderTable.setItems(mainApp.getOrderDataFiltered());
+        }else{
+            orderTable.setItems(mainApp.getOrderData());
+        }
+    }
+
+    @FXML
+    private void handleNewOrder(){
+        mainApp.showNewPersonDialogue();
+    }
+
+    @FXML
+    private void handleUpdateOrder(){
+        mainApp.showUpdateOrderDialogue(this.orderTable.getSelectionModel().getSelectedItem());
+        showOrderDetails(this.orderTable.getSelectionModel().getSelectedItem());
+    }
+
 }
 
 

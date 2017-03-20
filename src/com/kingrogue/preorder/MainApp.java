@@ -2,12 +2,19 @@ package com.kingrogue.preorder;/**
  * Created by Tim G on 09-Mar-17.
  */
 
+import com.kingrogue.preorder.model.Activity;
 import com.kingrogue.preorder.model.DataController;
 import com.kingrogue.preorder.model.Order;
+import com.kingrogue.preorder.view.NewOrderDialogueController;
 import com.kingrogue.preorder.view.OrderOverviewController;
+import com.kingrogue.preorder.view.UpdateOrderDialogueController;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -28,7 +35,7 @@ public class MainApp extends Application {
 
     public MainApp(){
 
-        addDummyData();
+        //addDummyData();
 
     }
 
@@ -90,6 +97,19 @@ public class MainApp extends Application {
         return dataController.getOrders();
     }
 
+    public ObservableList<Order> getOrderDataFiltered(){
+        return dataController.getOrdersFiltered();
+    }
+
+    public ObservableList<Activity> getOrderActivities(Order order){
+        int orderid = order.getID();
+        ObservableList<Activity> orderActivities = FXCollections.observableArrayList();
+        for(Activity activity: dataController.getActivities()){
+            if (activity.getOrderId() == orderid) orderActivities.add(activity);
+        }
+        return orderActivities;
+    }
+
     private void addDummyData(){
         dataController.addCustomer(-1, "Tim", 95717053);
         dataController.addCustomer(-1, "Matt", 95716541);
@@ -107,10 +127,72 @@ public class MainApp extends Application {
         dataController.addOrder(-1, 2571, 3, 1, 200, newLocalDate("12-01-2017"));
         dataController.addOrder(-1, 2572, 3, 1, 20, newLocalDate("12-01-2017"));
 
+        dataController.addActivity(4,-1,false, false, 10, newLocalDate("13-02-2017"));
+        dataController.addActivity(4,-1,false, false, 30, newLocalDate("13-02-2017"));
+        dataController.addActivity(4,-1,false, false, 50, newLocalDate("13-02-2017"));
+        dataController.addActivity(2,-1,false, false, 42, newLocalDate("13-02-2017"));
+
     }
 
     public LocalDate newLocalDate(String date){
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         return LocalDate.parse(date,dtf);
+    }
+
+    public Boolean showNewPersonDialogue(){
+        try{
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("/com/kingrogue/preorder/view/NewOrderDialogue.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            Stage dialogueStage = new Stage();
+            dialogueStage.setTitle("New Order");
+            dialogueStage.initModality(Modality.WINDOW_MODAL);
+            dialogueStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogueStage.setScene(scene);
+
+            NewOrderDialogueController controller = loader.getController();
+            controller.setDialogueStage(dialogueStage);
+            controller.setDataController(this.dataController);
+
+            dialogueStage.showAndWait();
+
+            return controller.isOkClicked();
+        }catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public Boolean showUpdateOrderDialogue(Order order){
+        try{
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("/com/kingrogue/preorder/view/UpdateOrderDialogue.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            Stage dialogueStage = new Stage();
+            dialogueStage.setTitle("Update Order");
+            dialogueStage.initModality(Modality.WINDOW_MODAL);;
+            dialogueStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogueStage.setScene(scene);
+
+            UpdateOrderDialogueController controller = loader.getController();
+            controller.setDialogueStage(dialogueStage);
+            controller.setDataController(this.dataController);
+            controller.setOrder(order);
+
+            dialogueStage.showAndWait();
+            System.out.println("Clicked ok?");
+            return controller.isOkClicked();
+        }catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+    @FXML
+    private void save(){
+        this.dataController.saveAll(null);
     }
 }

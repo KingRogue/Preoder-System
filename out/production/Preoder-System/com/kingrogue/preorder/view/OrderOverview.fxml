@@ -28,7 +28,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <CheckBox accessibleRole="IMAGE_VIEW" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" selected="true" text="Hide completed orders" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="SOMETIMES">
+                        <CheckBox fx:id="hideCompleteCheckbox" accessibleRole="IMAGE_VIEW" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="Hide completed orders" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="SOMETIMES">
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
@@ -75,10 +75,10 @@
                         <Label text="Quantity Owed:" GridPane.rowIndex="5" />
                         <Label text="Order Date:" GridPane.rowIndex="2" />
                         <Label text="Order History:" GridPane.rowIndex="8" />
-                        <TableView prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="9">
+                        <TableView fx:id="activityTable" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="9">
                            <columns>
-                              <TableColumn prefWidth="92.0" text="Date" />
-                              <TableColumn prefWidth="202.0" text="Description" />
+                              <TableColumn fx:id="activityDateTableColumn" prefWidth="92.0" text="Date" />
+                              <TableColumn fx:id="activityDescriptionTableColumn" prefWidth="202.0" text="Description" />
                            </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -87,9 +87,8 @@
                         <Label text="Order Details" underline="true" />
                         <ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="10">
                            <buttons>
-                              <Button mnemonicParsing="false" text="New..." />
-                              <Button layoutX="331.0" layoutY="13.0" mnemonicParsing="false" text="Edit..." />
-                              <Button layoutX="246.0" layoutY="13.0" mnemonicParsing="false" text="Update..." />
+                              <Button mnemonicParsing="false" onAction="#handleNewOrder" text="New..." />
+                              <Button fx:id="updateButton" layoutX="246.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleUpdateOrder" text="Update..." />
                            </buttons>
                         </ButtonBar>
                         <Label text="Quantity Supplied" GridPane.rowIndex="6" />

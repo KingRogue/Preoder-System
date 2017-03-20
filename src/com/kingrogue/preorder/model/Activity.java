@@ -36,8 +36,44 @@ public class Activity {
         }else if(cancelledOrder.get()){
             description.set("Cancelled Order");
         }else{
-            description.set("Provided " + Integer.toString(quantitySupplied.get()) + " items");
+            description.set("Provided " + Integer.toString(quantitySupplied.get()) + " units");
         }
+    }
+
+    public boolean isCreatedOrder() {
+        return createdOrder.get();
+    }
+
+    public SimpleBooleanProperty createdOrderProperty() {
+        return createdOrder;
+    }
+
+    public void setCreatedOrder(boolean createdOrder) {
+        this.createdOrder.set(createdOrder);
+    }
+
+    public boolean isCancelledOrder() {
+        return cancelledOrder.get();
+    }
+
+    public SimpleBooleanProperty cancelledOrderProperty() {
+        return cancelledOrder;
+    }
+
+    public void setCancelledOrder(boolean cancelledOrder) {
+        this.cancelledOrder.set(cancelledOrder);
+    }
+
+    public String getDescription() {
+        return description.get();
+    }
+
+    public SimpleStringProperty descriptionProperty() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description.set(description);
     }
 
     public int getOrderId(){
@@ -70,6 +106,18 @@ public class Activity {
 
     public void setQuantitySupplied(int quantitySupplied){
         this.quantitySupplied.set(quantitySupplied);
+    }
+
+    public LocalDate getDate() {
+        return date.get();
+    }
+
+    public ObjectProperty<LocalDate> dateProperty() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date.set(date);
     }
 
     public SimpleIntegerProperty quantitySuppliedProperty(){
