@@ -14,7 +14,7 @@ public class Order {
 
     //set on initialization
     private final SimpleIntegerProperty id;
-    private final SimpleIntegerProperty receiptNo;
+    private final SimpleStringProperty receiptNo;
     private final SimpleIntegerProperty customerID;
     private final SimpleIntegerProperty productID;
     private final SimpleIntegerProperty quantity;
@@ -27,10 +27,10 @@ public class Order {
     private SimpleIntegerProperty quantitySupplied;
     private int activityCount;
 
-    public Order(int id, int receiptNo, int customerID, int productID, int quantity, LocalDate date) {
+    public Order(int id, String receiptNo, int customerID, int productID, int quantity, LocalDate date) {
 
         this.id = new SimpleIntegerProperty(id);
-        this.receiptNo = new SimpleIntegerProperty(receiptNo);
+        this.receiptNo = new SimpleStringProperty(receiptNo);
         this.customerID = new SimpleIntegerProperty(customerID);
         this.productID = new SimpleIntegerProperty(productID);
         this.quantity = new SimpleIntegerProperty(quantity);
@@ -56,15 +56,15 @@ public class Order {
         return id;
     }
 
-    public int getReceiptNo(){
+    public String getReceiptNo(){
         return receiptNo.get();
     }
 
-    public void setReceiptNo(int receiptNo){
+    public void setReceiptNo(String receiptNo){
         this.receiptNo.set(receiptNo);
     }
 
-    public IntegerProperty receiptNoProperty(){
+    public StringProperty receiptNoProperty(){
         return receiptNo;
     }
 

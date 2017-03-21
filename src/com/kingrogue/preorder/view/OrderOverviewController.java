@@ -143,7 +143,7 @@ public class OrderOverviewController {
         if (order != null) {
             customerNameLabel.setText(order.getCustomerName());
             orderDateLabel.setText(DateUtil.DATE_FORMATTER.format(order.getDate()));
-            receiptNoLabel.setText(Integer.toString(order.getReceiptNo()));
+            receiptNoLabel.setText(order.getReceiptNo());
             productNameLabel.setText(order.getProductName());
             quantityOwedLabel.setText(Integer.toString(order.getQuantityOwed()));
             quantitySuppliedLabel.setText(Integer.toString(order.getQuantitySupplied()));
@@ -170,7 +170,7 @@ public class OrderOverviewController {
 
     @FXML
     private void handleNewOrder(){
-        mainApp.showNewPersonDialogue();
+        mainApp.showNewOrderDialogue();
     }
 
     @FXML

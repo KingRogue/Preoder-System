@@ -131,7 +131,7 @@ public class DataController {
             for (int i = 0 ; i<contents.size() ; i++) {
                 String[] lineList = contents.get(i).split(",");
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                addOrder(new Integer(lineList[0]), new Integer(lineList[1]), new Integer(lineList[2]), new Integer(lineList[3]), new Integer(lineList[4]), LocalDate.parse(lineList[5],dtf));
+                addOrder(new Integer(lineList[0]), lineList[1], new Integer(lineList[2]), new Integer(lineList[3]), new Integer(lineList[4]), LocalDate.parse(lineList[5],dtf));
             }
         }
         return;
@@ -170,7 +170,7 @@ public class DataController {
             contents.remove(0);
             for (int i = 0 ; i<contents.size() ; i++) {
                 String[] lineList = contents.get(i).split(",");
-                addCustomer(new Integer(lineList[0]), lineList[1], new Integer(lineList[2]));
+                addCustomer(new Integer(lineList[0]), lineList[1], lineList[2]);
             }
         }
         return;
@@ -233,7 +233,7 @@ public class DataController {
             Order order = i.next();
             String orderContent =
                     Integer.toString(order.getID()) + ","
-                    + Integer.toString(order.getReceiptNo()) + ","
+                    + order.getReceiptNo() + ","
                     + Integer.toString(order.getCustomerID()) + ","
                     + Integer.toString(order.getProductID()) + ","
                     + Integer.toString(order.getQuantity()) + ","
@@ -260,7 +260,7 @@ public class DataController {
             String customerContent =
                     Integer.toString(customer.getID()) + ","
                     + customer.getName() + ","
-                    + Integer.toString(customer.getPhone()) + "\n";
+                    + customer.getPhone() + "\n";
             content = content + customerContent;
         }
         writeToFile("/customers.txt", filelocation, content);
@@ -311,7 +311,7 @@ public class DataController {
         if (this.loaded) this.saveAll(null);
     }
 
-    public void addOrder(int id, int receiptNo, int customerID, int productID, int quantity, LocalDate date){ //adding a new order to the system
+    public void addOrder(int id, String receiptNo, int customerID, int productID, int quantity, LocalDate date){ //adding a new order to the system
         boolean newOrderBool = false;
         if (id == -1){
             newOrderBool = true;
@@ -339,7 +339,7 @@ public class DataController {
         if (this.loaded) this.saveAll(null);
     }
 
-    public void addCustomer(int id, String name, int phone){ //creating a new customer
+    public void addCustomer(int id, String name, String phone){ //creating a new customer
         if (id == -1){
             id = this.customerIdCount;
         }

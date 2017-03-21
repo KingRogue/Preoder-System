@@ -13,15 +13,15 @@ public class Customer {
     //set on initialization
     private final SimpleIntegerProperty id;
     private final SimpleStringProperty name;
-    private final SimpleIntegerProperty phone;
+    private final SimpleStringProperty phone;
 
     //populated after init
     private SimpleIntegerProperty noOrders;
 
-    public Customer(int id, String name, int phone){
+    public Customer(int id, String name, String phone){
         this.id = new SimpleIntegerProperty(id);
         this.name = new SimpleStringProperty(name);
-        this.phone = new SimpleIntegerProperty(phone);
+        this.phone = new SimpleStringProperty(phone);
 
         this.noOrders = new SimpleIntegerProperty(0);
     }
@@ -54,15 +54,15 @@ public class Customer {
         return name;
     }
 
-    public int getPhone(){
+    public String getPhone(){
         return phone.get();
     }
 
-    public void setPhone(int phone){
+    public void setPhone(String phone){
         this.phone.set(phone);
     }
 
-    public IntegerProperty phoneProperty(){
+    public StringProperty phoneProperty(){
         return phone;
     }
 

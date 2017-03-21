@@ -81,7 +81,7 @@ public class NewOrderDialogueController {
     @FXML
     private void handleOK(){
         if(isInputValid()){
-            dataController.addOrder(-1, new Integer(receiptTextField.getText()), customerChoiceBox.getValue().getID(), productChoiceBox.getValue().getId(), new Integer(quantityTextField.getText()), datePicker.getValue());
+            dataController.addOrder(-1, receiptTextField.getText(), customerChoiceBox.getValue().getID(), productChoiceBox.getValue().getId(), new Integer(quantityTextField.getText()), datePicker.getValue());
 
             okClicked = true;
             dialogueStage.close();
