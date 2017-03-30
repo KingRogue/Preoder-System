@@ -4,20 +4,24 @@ package com.kingrogue.preorder.view;
  * Created by Tim G on 10-Mar-17.
  */
 
+import com.kingrogue.preorder.MainApp;
 import com.kingrogue.preorder.model.Customer;
 import com.kingrogue.preorder.model.DataController;
 import com.kingrogue.preorder.model.Product;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import com.kingrogue.preorder.model.Order;
 import com.kingrogue.preorder.util.DateUtil;
+
+import java.io.IOException;
 
 public class NewOrderDialogueController {
     @FXML
@@ -76,6 +80,60 @@ public class NewOrderDialogueController {
 
     public Boolean isOkClicked(){
         return okClicked;
+    }
+
+    @FXML
+    private void handleNewCustomer(){
+        try{
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("/com/kingrogue/preorder/view/NewCustomerDialogue.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            Stage dialogueStage = new Stage();
+            dialogueStage.setTitle("New Customer");
+            dialogueStage.initModality(Modality.WINDOW_MODAL);;
+            dialogueStage.initOwner(this.dialogueStage);
+            Scene scene = new Scene(page);
+            dialogueStage.setScene(scene);
+
+            NewCustomerDialogueController controller = loader.getController();
+            controller.setDialogueStage(dialogueStage);
+            controller.setDataController(this.dataController);
+
+            dialogueStage.showAndWait();
+            if(controller.isOkClicked()){
+                this.customerChoiceBox.setItems(this.dataController.getCustomers());
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleNewProduct(){
+        try{
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("/com/kingrogue/preorder/view/NewProductDialogue.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            Stage dialogueStage = new Stage();
+            dialogueStage.setTitle("New Product");
+            dialogueStage.initModality(Modality.WINDOW_MODAL);;
+            dialogueStage.initOwner(this.dialogueStage);
+            Scene scene = new Scene(page);
+            dialogueStage.setScene(scene);
+
+            NewProductDialogueController controller = loader.getController();
+            controller.setDialogueStage(dialogueStage);
+            controller.setDataController(this.dataController);
+
+            dialogueStage.showAndWait();
+            if (controller.isOkClicked()){
+                this.productChoiceBox.setItems(this.dataController.getProducts());
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     @FXML
