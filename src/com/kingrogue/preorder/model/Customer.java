@@ -17,6 +17,7 @@ public class Customer {
 
     //populated after init
     private SimpleIntegerProperty noOrders;
+    private SimpleIntegerProperty noCompletedOrders;
 
     public Customer(int id, String name, String phone){
         this.id = new SimpleIntegerProperty(id);
@@ -24,6 +25,7 @@ public class Customer {
         this.phone = new SimpleStringProperty(phone);
 
         this.noOrders = new SimpleIntegerProperty(0);
+        this.noCompletedOrders = new SimpleIntegerProperty(0);
     }
 
     public String toString(){
@@ -70,11 +72,23 @@ public class Customer {
         return noOrders.get();
     }
 
-    public SimpleIntegerProperty noOrdersProperty() {
+    public IntegerProperty noOrdersProperty() {
         return noOrders;
     }
 
     public void setNoOrders(int noOrders) {
         this.noOrders.set(noOrders);
+    }
+
+    public int getNoCompletedOrders() {
+        return noCompletedOrders.get();
+    }
+
+    public SimpleIntegerProperty noCompletedOrdersProperty() {
+        return noCompletedOrders;
+    }
+
+    public void setNoCompletedOrders(int noCompletedOrders) {
+        this.noCompletedOrders.set(noCompletedOrders);
     }
 }

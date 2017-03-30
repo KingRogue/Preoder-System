@@ -108,9 +108,6 @@ public class OrderOverviewController {
         showOrderDetails(null);
         this.updateButton.disableProperty().set(true);
 
-        //orderTable.getSelectionModel().selectedItemProperty().addListener(
-        //        (observable, oldvalue, newvalue) -> showOrderDetails(newvalue));
-
         orderTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Order>() {
             @Override
             public void changed(ObservableValue<? extends Order> observable, Order oldValue, Order newValue) {

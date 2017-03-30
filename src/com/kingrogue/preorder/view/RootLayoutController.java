@@ -48,6 +48,16 @@ public class RootLayoutController {
     }
 
     @FXML
+    private void handleViewOrders(){
+        mainApp.changeScene(0);
+    }
+
+    @FXML
+    private void handleViewCustomers(){
+        mainApp.changeScene(1);
+    }
+
+    @FXML
     private void handleExit(){
         System.exit(0);
     }

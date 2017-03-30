@@ -22,6 +22,12 @@
                   <MenuItem mnemonicParsing="false" onAction="#handleNewProduct" text="New Product" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="View">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#handleViewOrders" text="Orders" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleViewCustomers" text="Customers" />
+               </items>
+            </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#handleAbout" text="About" />

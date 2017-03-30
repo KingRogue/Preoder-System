@@ -331,6 +331,10 @@ public class DataController {
         customer.setNoOrders( customer.getNoOrders() + 1 );
         newOrder.setCustomerName(customer.getName());
 
+        if (newOrder.getQuantityOwed() == 0){
+            customer.setNoCompletedOrders(customer.getNoCompletedOrders() + 1);
+        }
+
         this.orders.add(newOrder);
         this.orderIdCount += 1;
         if (newOrderBool){
@@ -357,6 +361,11 @@ public class DataController {
         Order order = getOrder(orderID);
         order.setQuantitySupplied(order.getQuantitySupplied() + quantitySupplied);
         order.setQuantityOwed(order.getQuantityOwed() - quantitySupplied);
+
+        if (order.getQuantityOwed() == 0){
+            Customer customer = this.getCustomer(order.getCustomerID());
+            customer.setNoCompletedOrders(customer.getNoCompletedOrders() + 1);
+        }
 
         Activity activity = new Activity(orderID, activityNo, createdOrder, cancelledOrder, quantitySupplied, date);
         activityIdCount += 1;

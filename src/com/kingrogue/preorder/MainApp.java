@@ -3,6 +3,7 @@ package com.kingrogue.preorder;/**
  */
 
 import com.kingrogue.preorder.model.Activity;
+import com.kingrogue.preorder.model.Customer;
 import com.kingrogue.preorder.model.DataController;
 import com.kingrogue.preorder.model.Order;
 import com.kingrogue.preorder.view.*;
@@ -32,6 +33,10 @@ public class MainApp extends Application {
 
     private DataController dataController = new DataController();
 
+    private int sceneNo;
+    private AnchorPane orderOverview;
+    private AnchorPane customerOverview;
+
     public MainApp(){
 
         //addDummyData();
@@ -47,6 +52,10 @@ public class MainApp extends Application {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Preorder System");
         this.primaryStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("paper.png")));
+
+        this.sceneNo = 0;
+        this.orderOverview = null;
+        this.customerOverview = null;
 
         initRootLayout();
         showOrderOverview();
@@ -75,20 +84,46 @@ public class MainApp extends Application {
     }
 
     public void showOrderOverview(){
-        try{
-            //load the order overview from file
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainApp.class.getResource("view/OrderOverview.fxml"));
-            AnchorPane orderOverview = (AnchorPane) loader.load();
+        if (this.orderOverview == null){
+            try{
+                //load the order overview from file
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(MainApp.class.getResource("view/OrderOverview.fxml"));
+                AnchorPane orderOverview = (AnchorPane) loader.load();
 
-            //set to center of root layout
-            rootLayout.setCenter(orderOverview);
+                //set to center of root layout
+                rootLayout.setCenter(orderOverview);
+                this.orderOverview = orderOverview;
 
-            OrderOverviewController controller =loader.getController();
-            controller.setMainApp(this);
+                OrderOverviewController controller =loader.getController();
+                controller.setMainApp(this);
 
-        }catch(IOException e){
-            e.printStackTrace();
+
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }else{
+            rootLayout.setCenter(this.orderOverview);
+        }
+    }
+
+    public void showCustomerOverview(){
+        if (this.customerOverview == null){
+            try{
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(MainApp.class.getResource("view/CustomerOverview.fxml"));
+                AnchorPane customerOverview = (AnchorPane) loader.load();
+
+                rootLayout.setCenter(customerOverview);
+                this.customerOverview = customerOverview;
+
+                CustomerOverviewController controller = loader.getController();
+                controller.setMainApp(this);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }else{
+            rootLayout.setCenter(this.customerOverview);
         }
     }
 
@@ -104,6 +139,10 @@ public class MainApp extends Application {
         return dataController.getOrdersFiltered();
     }
 
+    public ObservableList<Customer> getCustomerData(){
+        return dataController.getCustomers();
+    }
+
     public ObservableList<Activity> getOrderActivities(Order order){
         int orderid = order.getID();
         ObservableList<Activity> orderActivities = FXCollections.observableArrayList();
@@ -111,6 +150,15 @@ public class MainApp extends Application {
             if (activity.getOrderId() == orderid) orderActivities.add(activity);
         }
         return orderActivities;
+    }
+
+    public ObservableList<Order> getCustomerOrders(Customer customer){
+        int customerid = customer.getID();
+        ObservableList<Order> customerOrders = FXCollections.observableArrayList();
+        for (Order order: dataController.getOrders()){
+            if (order.getCustomerID() == customerid) customerOrders.add(order);
+        }
+        return customerOrders;
     }
 
     private void addDummyData(){
@@ -241,6 +289,21 @@ public class MainApp extends Application {
         }catch (IOException e){
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public void changeScene(int sceneNo){
+        if(this.sceneNo != sceneNo){
+            rootLayout.setCenter(null);
+            if (sceneNo == 0) {
+                this.showOrderOverview();
+            }
+            else {
+                if (sceneNo == 1) {
+                    this.showCustomerOverview();
+                }
+            }
+            this.sceneNo = sceneNo;
         }
     }
 
